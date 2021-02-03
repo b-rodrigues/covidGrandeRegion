@@ -1,11 +1,8 @@
 Package: covidGrandeRegion
 Title: COVID-19 data from the Greater Region
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "Bruno",
-           family = "Rodrigues",
-           role = c("aut", "cre"),
-           email = "bruno@brodrigues.co",
+Author: Bruno Rodrigues
+Maintainer: Bruno Rodrigues <contact@brodrigues.co>
 Description: Download and plot data from daily or weekly COVID-19 cases in the Greater Region
 License: WTFPL, version 2
 Encoding: UTF-8
