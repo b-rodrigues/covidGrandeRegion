@@ -10,7 +10,7 @@ ger_kreise <- getData("GADM", country = "GERMANY", level = 2)
 ger_kreise <- ger_kreise[`%in%`(ger_kreise$NAME_1, c("Rheinland-Pfalz", "Saarland")),]
 ger_kreise$NAME_2[ger_kreise$NAME_2 == "Eifelkreis Bitburg-Prüm"]  <- "Bitburg-Prüm"
 ger_kreise$NAME_2[ger_kreise$NAME_2 == "St. Wendel"]  <- "Sankt Wendel"
-ger_kreise$NAME_2[ger_kreise$NAME_2 == "Regionalverband Saarbrücken"]  <- "Stadtverband Saarbrücken"
+#ger_kreise$NAME_2[ger_kreise$NAME_2 == "Regionalverband Saarbrücken"]  <- "Stadtverband Saarbrücken"
 ger_kreise$NAME_2[ger_kreise$NAME_2 == "Altenkirchen (Westerwald)"]  <- "Altenkirchen"
 ger_kreise$NAME_2[ger_kreise$NAME_2 == "Neustadt an der Weinstraße"]  <- "Neustadt a.d.Weinstraße"
 ger_kreise$NAME_2[ger_kreise$NAME_2 == "Landau in der Pfalz"]  <- "Landau i.d.Pfalz"
@@ -48,14 +48,15 @@ greater_region_covid <- get_greater_region_data(daily = FALSE)
 
 grande_region_json <- geojsonio::geojson_list(grande_region)
 
-usethis::use_data(grande_region_json)
+#Busethis::use_data(grande_region_json)
 
 greater_region_covid %>%
   left_join(population) %>%
   mutate(cases = cases/population*100000) %>% 
   rename(NAME_2 = sub_region) %>%  
   group_by(week) %>%  
-e_charts(NAME_2, timeline = TRUE) %>%
+  e_charts(NAME_2, timeline = TRUE) %>%
+  e_title("Weekly COVID-19 cases in the Greater Region", "Cases per 100k inhabitants") %>%  
   e_map_register("Grande Region", grande_region_json) %>%
   e_map(cases, map = "Grande Region", nameProperty = "NAME_2") %>%
   e_visual_map(min = 0, max = 1680) %>%
