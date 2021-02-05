@@ -3,6 +3,7 @@
 export(get_be_data)
 export(get_de_data)
 export(get_fr_data)
+export(get_greater_region_data)
 export(get_lu_data)
 import(dplyr)
 importFrom(data.table,fread)

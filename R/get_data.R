@@ -16,15 +16,17 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
 
   dataset <- fread(url) %>%
     mutate(country = "Deutschland") %>%  
-    filter(Bundesland == "Rheinland-Pfalz") %>%  
-    #filter(Landkreis %in% c("LK Bitburg-Prüm", "LK Trier-Saarburg", "SK Trier", "LK Merzig-Wadern")) %>%
+    filter(Bundesland %in% c("Saarland", "Rheinland-Pfalz")) %>%  
     rename(day = Refdatum) %>%
     mutate(day = str_sub(day, 1, 10)) %>%  
     mutate(day = ymd(day)) %>%  
     filter(day >= ymd("2020-02-24")) %>%
     group_by(day, country, region = Bundesland, sub_region = Landkreis) %>%  
     summarise(cases = sum(AnzahlFall)) %>%
-    ungroup() 
+    ungroup() %>%
+    mutate(sub_region = ifelse(sub_region == "SK Kaiserslautern", "SK Kaiserslautern (Kreisfreie Stadt)", sub_region)) %>%  
+    mutate(sub_region = ifelse(sub_region == "LK Stadtverband Saarbrücken", "LK Regionalverband Saarbrücken", sub_region)) %>%  
+    mutate(sub_region = str_remove(sub_region, "^..."))
 
   if(daily){
     return(dataset)
@@ -59,14 +61,16 @@ get_be_data <- function(url = "https://epistat.sciensano.be/Data/COVID19BE_CASES
                         daily = TRUE){
 
   dataset <- fread(url) %>%
-    mutate(country = "Belgium") %>%  
+    mutate(country = "Belgique") %>%  
     filter(REGION == "Wallonia") %>%
     mutate(REGION = "Wallonie") %>%  
     filter(DATE >= ymd("2020-02-24")) %>%
     rename(day = DATE) %>%
     group_by(day, country, region = REGION, sub_region = PROVINCE) %>%
     summarise(cases = sum(CASES)) %>%
-    ungroup()
+    ungroup() %>%
+    mutate(sub_region = ifelse(sub_region == "Luxembourg", "Province de Luxembourg", sub_region)) %>%  
+    mutate(sub_region = ifelse(sub_region == "BrabantWallon", "Brabant Wallon", sub_region))
 
   if(daily){
     return(dataset)
@@ -206,5 +210,30 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
     }
     return(dataset)
   })
+
+}
+
+
+#' Download data for the entirety of the Greater Region
+#' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
+#' @return A data frame the latest positive cases data for the whole Greater Region
+#' @import dplyr
+#' @importFrom data.table fread
+#' @importFrom lubridate dmy
+#' @importFrom stringr str_remove
+#' @importFrom janitor clean_names
+#' @export
+#' @examples
+#' \dontrun{
+#' get_fr_data()
+#' }
+get_greater_region_data <- function(daily = TRUE){
+
+  lu <- get_lu_data(daily = daily)
+  fr <- get_fr_data(daily = daily)
+  be <- get_be_data(daily = daily)
+  de <- get_de_data(daily = daily)
+
+  bind_rows(lu, fr, be, de)
 
 }
