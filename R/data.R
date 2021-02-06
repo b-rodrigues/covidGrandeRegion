@@ -15,3 +15,10 @@
 #'   ...
 #' }
 "population"
+
+
+#' Map of the Greater Region
+#'
+#' Map of the Greater Region, loads a SpatialPolygonsDataFrame object.
+#'
+"grande_region_map"

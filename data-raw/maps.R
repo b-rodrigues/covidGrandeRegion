@@ -44,11 +44,9 @@ grande_region %>% as.data.frame
 
 greater_region_covid <- get_greater_region_data(daily = FALSE) 
 
+grande_region_map <- geojsonio::geojson_list(grande_region)
 
-
-grande_region_json <- geojsonio::geojson_list(grande_region)
-
-#Busethis::use_data(grande_region_json)
+usethis::use_data(grande_region_map, overwrite = TRUE)
 
 greater_region_covid %>%
   left_join(population) %>%
