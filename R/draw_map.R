@@ -6,7 +6,7 @@
 #' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
 #' @param normalize If TRUE, get cases per 100k inhabitants, if FALSE, get absolute cases.
 #' @return A data frame the latest positive cases data.
-#' @import dplyr
+#' @import dplyr echarts4r
 #' @importFrom data.table fread
 #' @importFrom lubridate ymd isoweek year 
 #' @importFrom stringr str_sub
