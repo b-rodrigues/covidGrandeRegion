@@ -22,7 +22,8 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
     mutate(day = ymd(day)) %>%  
     filter(day >= ymd("2020-02-24")) %>%
     group_by(day, country, region = Bundesland, sub_region = Landkreis) %>%  
-    summarise(cases = sum(AnzahlFall)) %>%
+    summarise(cases = sum(AnzahlFall),
+              deaths = sum(AnzahlTodesfall)) %>%
     ungroup() %>%
     mutate(sub_region = ifelse(sub_region == "SK Kaiserslautern", "SK Kaiserslautern (Kreisfreie Stadt)", sub_region)) %>%  
     mutate(sub_region = ifelse(sub_region == "LK Stadtverband Saarbrücken", "LK Regionalverband Saarbrücken", sub_region)) %>%  
@@ -38,7 +39,8 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
       mutate(week = ifelse(week == "2021-W53-1", "2021-W01-1", week)) %>%  
       mutate(week = ISOweek2date(week)) %>%  
       group_by(week, country, region, sub_region) %>%
-      summarise(cases = sum(cases)) %>%
+      summarise(cases = sum(cases),
+                deaths = sum(deaths)) %>%
       ungroup()
       }
 
@@ -46,7 +48,8 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
 }
 
 #' Download data for the Belgian border regions of Luxembourg
-#' @param url The url to the data. By default, points to the latest known url.
+#' @param url_cases The url to the cases data. By default, points to the latest known url.
+#' @param url_deaths The url to the deaths data. By default, points to the latest known url.
 #' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
 #' @return A data frame the latest positive cases data.
 #' @import dplyr
@@ -57,17 +60,28 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
 #' \dontrun{
 #' get_be_data()
 #' }
-get_be_data <- function(url = "https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv",
+get_be_data <- function(url_cases = "https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv",
+                        url_deaths = "https://epistat.sciensano.be/Data/COVID19BE_MORT.csv",
                         daily = TRUE){
 
-  dataset <- fread(url) %>%
+  data_cases <- fread(url_cases)
+  data_deaths <- fread(url_deaths)
+    
+
+  dataset <- full_join(data_cases,
+                       data_deaths) %>%
+    mutate(CASES = ifelse(is.na(CASES), 0, CASES)) %>%
+    mutate(DEATHS = ifelse(is.na(DEATHS), 0, DEATHS))
+
+  dataset <- dataset %>%  
     mutate(country = "Belgique") %>%  
     filter(REGION == "Wallonia") %>%
     mutate(REGION = "Wallonie") %>%  
     filter(DATE >= ymd("2020-02-24")) %>%
     rename(day = DATE) %>%
     group_by(day, country, region = REGION, sub_region = PROVINCE) %>%
-    summarise(cases = sum(CASES)) %>%
+    summarise(cases = sum(CASES),
+              deaths = sum(DEATHS)) %>%
     ungroup() %>%
     mutate(sub_region = ifelse(sub_region == "Luxembourg", "Province de Luxembourg", sub_region)) %>%  
     mutate(sub_region = ifelse(sub_region == "BrabantWallon", "Brabant Wallon", sub_region))
@@ -82,7 +96,8 @@ get_be_data <- function(url = "https://epistat.sciensano.be/Data/COVID19BE_CASES
       mutate(week = ifelse(week == "2021-W53-1", "2021-W01-1", week)) %>%  
       mutate(week = ISOweek2date(week)) %>%  
       group_by(week, country, region, sub_region) %>%
-      summarise(cases = sum(cases)) %>%
+      summarise(cases = sum(cases),
+                deaths = sum(deaths)) %>%
       ungroup()
   }
 

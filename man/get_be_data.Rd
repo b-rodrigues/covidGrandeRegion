@@ -5,12 +5,15 @@
 \title{Download data for the Belgian border regions of Luxembourg}
 \usage{
 get_be_data(
-  url = "https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv",
+  url_cases = "https://epistat.sciensano.be/Data/COVID19BE_CASES_AGESEX.csv",
+  url_deaths = "https://epistat.sciensano.be/Data/COVID19BE_MORT.csv",
   daily = TRUE
 )
 }
 \arguments{
-\item{url}{The url to the data. By default, points to the latest known url.}
+\item{url_cases}{The url to the cases data. By default, points to the latest known url.}
+
+\item{url_deaths}{The url to the deaths data. By default, points to the latest known url.}
 
 \item{daily}{If TRUE, get daily cases, if FALSE, weekly cases.}
 }
