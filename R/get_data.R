@@ -1,7 +1,7 @@
 #' Download data for the German border regions of Luxembourg
 #' @param url The url to the data. By default, points to the latest known url.
 #' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
-#' @return A data frame the latest positive cases data.
+#' @return A data frame with the latest positive cases and deaths.
 #' @import dplyr
 #' @importFrom data.table fread
 #' @importFrom lubridate ymd isoweek year 
@@ -51,7 +51,7 @@ get_de_data <- function(url = "https://opendata.arcgis.com/datasets/dd4580c81020
 #' @param url_cases The url to the cases data. By default, points to the latest known url.
 #' @param url_deaths The url to the deaths data. By default, points to the latest known url.
 #' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
-#' @return A data frame the latest positive cases data.
+#' @return A data frame with the latest positive cases and deaths.
 #' @import dplyr
 #' @importFrom data.table fread
 #' @importFrom lubridate ymd
@@ -69,7 +69,7 @@ get_be_data <- function(url_cases = "https://epistat.sciensano.be/Data/COVID19BE
     
 
   dataset <- full_join(data_cases,
-                       data_deaths) %>%
+                       data_deaths, by = c("DATE", "REGION", "AGEGROUP", "SEX")) %>%
     mutate(CASES = ifelse(is.na(CASES), 0, CASES)) %>%
     mutate(DEATHS = ifelse(is.na(DEATHS), 0, DEATHS))
 
@@ -111,7 +111,7 @@ get_be_data <- function(url_cases = "https://epistat.sciensano.be/Data/COVID19BE
 #' @param url_old The url to the data from the first wave (Spring 2020). By default, points to the latest known url.
 #' @param url_new The url to the data from after the first wave (Spring 2020). By default, points to the latest known url.
 #' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
-#' @return A data frame the latest positive cases data.
+#' @return A data frame with the latest positive cases. Deaths are unavailable, so that column is empty.
 #' @import dplyr
 #' @importFrom data.table fread
 #' @importFrom lubridate ymd
@@ -159,7 +159,8 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
 
   dataset <- bind_rows(fr_alt, fr_old, fr_new) %>%
     group_by(day, country, region, sub_region) %>%
-    summarise(cases = sum(cases)) %>%
+    summarise(cases = sum(cases),
+              deaths = NA) %>%
     ungroup()
 
   if(daily){
@@ -172,7 +173,8 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
       mutate(week = ifelse(week == "2021-W53-1", "2021-W01-1", week)) %>%
       mutate(week = ISOweek2date(week)) %>%
       group_by(week, country, region, sub_region) %>%
-      summarise(cases = sum(cases)) %>%
+      summarise(cases = sum(cases),
+                deaths = NA) %>%
       ungroup()
       }
   return(dataset)
@@ -181,8 +183,8 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
 
 #' Download data for Luxembourg. 
 #' @param url The url to the data. By default, points to the latest known url.
-#' @param daily If TRUE, get daily cases, if FALSE, weekly cases.
-#' @return A data frame the latest positive cases data.
+#' @param daily If TRUE, get daily cases and deaths, if FALSE, weekly cases.
+#' @return A data frame with the latest positive cases and deaths.
 #' @import dplyr
 #' @importFrom data.table fread
 #' @importFrom lubridate dmy
@@ -207,7 +209,8 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
              region = "Luxembourg",
              sub_region = "Luxembourg") %>%  
       group_by(day, country, region, sub_region) %>%
-      summarise(cases = sum(nb_de_positifs, na.rm = TRUE)) %>%
+      summarise(cases = sum(nb_de_positifs, na.rm = TRUE),
+                deaths = sum(nb_morts, na.rm = TRUE)) %>%
       ungroup()
 
     if(daily){
@@ -220,7 +223,8 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
         mutate(week = ifelse(week == "2021-W53-1", "2021-W01-1", week)) %>%  
         mutate(week = ISOweek2date(week)) %>%  
         group_by(week, country, region, sub_region) %>%
-        summarise(cases = sum(cases)) %>%
+        summarise(cases = sum(cases),
+                  deaths = sum(nb_morts, na.rm = TRUE)) %>%
         ungroup() 
     }
     return(dataset)

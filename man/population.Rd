@@ -8,8 +8,8 @@
 A data frame with 46 rows and 6 variables:
 \describe{
 \item{country}{Luxembourg, France, Belgium or Germany}
-\item{region}{First administrative level. Lorraine for France, Wallonie for Belgium, Rheinland-Pfalz for Germany and Luxembourg for Luxembourg}
-\item{sub_region}{First administrative level: Lorraine for France, Wallonie for Belgium, Rheinland-Pfalz for Germany and Luxembourg for Luxembourg}
+\item{region}{First administrative level. Lorraine for France, Wallonie for Belgium, Rheinland-Pfalz and Saarland for Germany and Luxembourg for Luxembourg}
+\item{sub_region}{Second administrative level: departments for France, provinces for Belgium, kreise for Germany and Luxembourg for Luxembourg}
 \item{year}{The year the population was counted; (1st of January) 2020 is the only value}
 \item{population}{Population of the sub_region}
 \item{source}{Where these values can be downloaded}

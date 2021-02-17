@@ -26,7 +26,7 @@ reflects the reality better. By default, points to the latest known url (source:
 \item{daily}{If TRUE, get daily cases, if FALSE, weekly cases.}
 }
 \value{
-A data frame the latest positive cases data.
+A data frame with the latest positive cases. Deaths are unavailable, so that column is empty.
 }
 \description{
 Download data for the French border regions of Luxembourg

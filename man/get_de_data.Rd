@@ -15,7 +15,7 @@ get_de_data(
 \item{daily}{If TRUE, get daily cases, if FALSE, weekly cases.}
 }
 \value{
-A data frame the latest positive cases data.
+A data frame with the latest positive cases and deaths.
 }
 \description{
 Download data for the German border regions of Luxembourg
