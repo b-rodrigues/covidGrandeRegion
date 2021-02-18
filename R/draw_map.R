@@ -40,7 +40,7 @@ draw_map <- function(dataset = NULL,
   if(normalize){
     data("population")
     dataset <- dataset %>%
-      left_join(population) %>%
+      right_join(population) %>%
       mutate(cases = cases/population*100000)
   } 
 

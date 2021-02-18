@@ -211,7 +211,7 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
       mutate(l_morts = lag(nb_morts)) %>%
       mutate(l_morts = ifelse(is.na(l_morts), 0, l_morts)) %>%
       mutate(morts = nb_morts - l_morts) %>%  
-      group_by(day, country, region, sub_region) 
+      group_by(day, country, region, sub_region) %>%  
       summarise(cases = sum(nb_de_positifs, na.rm = TRUE),
                 deaths = sum(morts, na.rm = TRUE)) %>%
       ungroup()
@@ -226,8 +226,8 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
         mutate(week = ifelse(week == "2021-W53-1", "2021-W01-1", week)) %>%  
         mutate(week = ISOweek2date(week)) %>%  
         group_by(week, country, region, sub_region) %>%
-        summarise(cases = sum(cases),
-                  deaths = sum(nb_morts, na.rm = TRUE)) %>%
+        summarise(cases = sum(cases, na.rm = TRUE),
+                  deaths = sum(deaths, na.rm = TRUE)) %>%
         ungroup() 
     }
     return(dataset)
