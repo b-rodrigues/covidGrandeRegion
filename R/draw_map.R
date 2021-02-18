@@ -60,12 +60,14 @@ draw_map <- function(dataset = NULL,
     pop_strings <- "Raw cases"
   }
 
+  data("grande_region_map")
+
   dataset %>%  
     rename(NAME_2 = sub_region) %>%  
     group_by(!!group_var) %>%  
     e_charts(NAME_2, timeline = TRUE) %>%
     e_title(paste0(daily_string, " COVID-19 cases in the Greater Region"), pop_strings) %>%  
-    e_map_register("Grande Region", grande_region_json) %>%
+    e_map_register("Grande Region", grande_region_map) %>%
     e_map(cases, map = "Grande Region", nameProperty = "NAME_2") %>%
     e_visual_map(min = 0, max = max_cases) %>%
     e_timeline_opts(playInterval = 500) 

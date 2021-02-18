@@ -208,9 +208,12 @@ get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-059
       mutate(country = "Luxembourg",
              region = "Luxembourg",
              sub_region = "Luxembourg") %>%  
-      group_by(day, country, region, sub_region) %>%
+      mutate(l_morts = lag(nb_morts)) %>%
+      mutate(l_morts = ifelse(is.na(l_morts), 0, l_morts)) %>%
+      mutate(morts = nb_morts - l_morts) %>%  
+      group_by(day, country, region, sub_region) 
       summarise(cases = sum(nb_de_positifs, na.rm = TRUE),
-                deaths = sum(nb_morts, na.rm = TRUE)) %>%
+                deaths = sum(morts, na.rm = TRUE)) %>%
       ungroup()
 
     if(daily){
