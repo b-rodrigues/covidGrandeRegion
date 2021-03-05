@@ -5,7 +5,7 @@
 \title{Download data for Luxembourg.}
 \usage{
 get_lu_data(
-  url = "https://data.public.lu/en/datasets/r/767f8091-0591-4b04-9a6f-a9d60cd57159",
+  url = "https://data.public.lu/en/datasets/r/0c6efef2-7776-4cc5-9af9-51bc372c59b0",
   daily = TRUE
 )
 }

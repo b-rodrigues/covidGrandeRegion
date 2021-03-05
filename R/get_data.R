@@ -195,7 +195,7 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
 #' \dontrun{
 #' get_fr_data()
 #' }
-get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/767f8091-0591-4b04-9a6f-a9d60cd57159",
+get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/0c6efef2-7776-4cc5-9af9-51bc372c59b0",
                         daily = TRUE){
 
   suppressWarnings({
