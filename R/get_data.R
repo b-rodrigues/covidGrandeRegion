@@ -186,7 +186,7 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
 #' @param daily If TRUE, get daily cases and deaths, if FALSE, weekly cases.
 #' @return A data frame with the latest positive cases and deaths.
 #' @import dplyr
-#' @importFrom data.table fread
+#' @importFrom readxl read_excel
 #' @importFrom lubridate dmy
 #' @importFrom stringr str_remove
 #' @importFrom janitor clean_names
@@ -195,11 +195,14 @@ get_fr_data <- function(url_alt = "https://raw.githubusercontent.com/opencovid19
 #' \dontrun{
 #' get_fr_data()
 #' }
-get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/0c6efef2-7776-4cc5-9af9-51bc372c59b0",
+get_lu_data <- function(url = "https://data.public.lu/en/datasets/r/32f94473-9a6d-4640-9b92-a5b019d38111",
                         daily = TRUE){
 
   suppressWarnings({
-    dataset <- fread(url) %>%
+    temp_excel <- tempfile()
+    download.file(url, destfile = temp_excel)
+    on.exit({file.remove(temp_excel)})
+    dataset <- read_excel(temp_excel) %>%
       clean_names() %>%
       mutate(day = dmy(date)) %>%
       filter(day >= ymd("2020-02-24")) %>% 
